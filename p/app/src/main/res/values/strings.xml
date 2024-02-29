@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">胖喵拼音</string>
+
+  <string name="im_name">胖喵拼音</string>
+  <string name="im_label">中文 (中国)</string>
+  <string name="im_label_en">Chinese (zh_CN)</string>
+</resources>

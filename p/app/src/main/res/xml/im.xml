@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<input-method
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:settingsActivity="io.github.fm_elpac.pmim_apk.MainActivity"
+  android:icon="@mipmap/ic_launcher">
+  <subtype
+    android:label="@string/im_label"
+    android:name="@string/im_name"
+    android:imeSubtypeLocale="zh_CN"
+    android:imeSubtypeMode="keyboard"
+  />
+  <subtype
+    android:label="@string/im_label_en"
+    android:name="@string/im_name"
+    android:imeSubtypeLocale="en_US"
+    android:imeSubtypeMode="keyboard"
+  />
+</input-method>

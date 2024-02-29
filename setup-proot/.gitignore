@@ -1,0 +1,6 @@
+
+setup/*
+!setup/setup.sh
+!setup/run.sh
+
+cache/
