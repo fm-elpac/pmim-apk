@@ -23,4 +23,82 @@ jobs:
         name: app-debug.apk
         path: p/app/build/outputs/apk/debug/app-debug.apk
 
-# TODO
+  # 组装 apk 安装所需的一堆文件, 方便安装
+  setup-apk:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # ui-vue (pmim-ibus)
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "fm-elpac/pmim-ibus"
+        tag: "v0.1.4"
+        fileName: "ui-vue-dist.tar.zst"
+    # pmim-server
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "fm-elpac/pmim"
+        tag: "v0.1.2"
+        fileName: "pmim-server.tar.zst"
+    # pmim-data
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "fm-elpac/pmim-data"
+        tag: "v0.1.1"
+        fileName: "pmim_sys.db.zst"
+
+    # 构建目录
+    - run: mkdir build1 && mkdir files
+    # 解压文件
+    - run: mv ui-vue-dist.tar.zst build1 && cd build1 && tar -xvf ui-vue-dist.tar.zst
+    - run: mv pmim-server.tar.zst build1 && cd build1 && tar -xvf pmim-server.tar.zst
+    - run: mv pmim_sys.db.zst build1 && cd build1 && zstd -d pmim_sys.db.zst
+    # DEBUG
+    - run: find build1
+
+    # TODO
+
+    # DEBUG
+    - run: find files
+    - uses: actions/upload-artifact@v4
+      with:
+        name: setup-pmim-apk
+        path: files
+
+  # 自动构建 deno 的 proot 运行环境
+  setup-proot:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # deno
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "denoland/deno"
+        tag: "v1.41.2"
+        fileName: "deno-aarch64-unknown-linux-gnu.zip"
+    # proot-distro: debian12_aarch64 sysroot
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "termux/proot-distro"
+        tag: "v4.7.0"
+        fileName: "debian-bookworm-aarch64-pd-v4.7.0.tar.xz"
+    # TODO termux ?
+
+    # 构建目录
+    - run: mkdir build1
+    # 解压文件
+    - run: mv deno-aarch64-unknown-linux-gnu.zip build1 && cd build1 && unzip deno-aarch64-unknown-linux-gnu.zip
+    - run: mv debian-bookworm-aarch64-pd-v4.7.0.tar.xz build1 && cd build1 && tar -xvf debian-bookworm-aarch64-pd-v4.7.0.tar.xz
+    # DEBUG
+    - run: find build1
+
+    # TODO
+
+    # DEBUG
+    - run: find setup-proot/setup
+    - uses: actions/upload-artifact@v4
+      with:
+        name: setup-proot-deno
+        path: setup-proot/setup
