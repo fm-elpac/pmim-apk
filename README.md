@@ -24,7 +24,31 @@
 Android 版本只提供源代码, 不提供编译好的 apk 文件. 请下载源代码自己使用 Android
 Studio 编译. 和编译普通的 apk 一样, 没有需要特别注意的地方.
 
-TODO
+---
+
+- 安装说明请见: [doc/安装.md](./doc/安装.md)
+
+- 本地开发运行请见: [doc/开发调试.md](./doc/开发调试.md)
+
+## 相关文章
+
+- 《Android 输入法框架简介》
+  - <https://www.bilibili.com/read/cv31912233/>
+  - <https://zhuanlan.zhihu.com/p/683489173>
+  - <https://juejin.cn/post/7343905368621940772>
+  - <https://blog.csdn.net/secext2022/article/details/136246340>
+
+- 《在 Android 运行 GNU/Linux 二进制程序 (proot)》
+  - <https://www.bilibili.com/read/cv32154318/>
+  - <https://zhuanlan.zhihu.com/p/684273410>
+  - <https://juejin.cn/post/7343902139822096420>
+  - <https://blog.csdn.net/secext2022/article/details/136333781>
+
+- 《高版本 Android 如何访问 sdcard/Android/data 目录中的文件 (翻译)》
+  - <https://www.bilibili.com/read/cv32665054/>
+  - <https://zhuanlan.zhihu.com/p/684280668>
+  - <https://juejin.cn/post/7343902139822161956>
+  - <https://blog.csdn.net/secext2022/article/details/136335220>
 
 ## LICENSE
 

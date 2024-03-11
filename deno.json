@@ -1,0 +1,5 @@
+{
+  "exclude": [
+    "**/p/app/build/*"
+  ]
+}
