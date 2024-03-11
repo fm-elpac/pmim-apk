@@ -109,7 +109,17 @@ jobs:
     # DEBUG
     - run: find build1
 
-    # TODO
+    # 开始组装
+    - run: mkdir -p setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: mkdir -p setup-proot/setup/debian12_aarch64/usr/bin/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libdl.so.2 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libm.so.6 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libpthread.so.0 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libc.so.6 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
+    - run: cp build1/debian-bookworm-aarch64/usr/bin/env setup-proot/setup/debian12_aarch64/usr/bin/
+    - run: mv build1/deno setup-proot/setup/debian12_aarch64/usr/bin/
 
     # DEBUG
     - run: find setup-proot/setup
