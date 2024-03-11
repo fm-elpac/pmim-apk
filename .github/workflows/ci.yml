@@ -57,13 +57,27 @@ jobs:
     # DEBUG
     - run: find build1
 
-    # TODO
+    # 开始组装
+    - run: mv build1/server files/
+    - run: cp -r build1/ui-vue/dist/* files/server/static/
+    - run: mv build1/ui-vue/dist files/ui
 
+    # DEBUG
+    - run: find files
+    # 不带数据库
+    - uses: actions/upload-artifact@v4
+      with:
+        name: setup-pmim-apk
+        path: files
+
+    # 带数据库
+    - run: mkdir files/pmim
+    - run: mv build1/pmim_sys.db files/pmim/
     # DEBUG
     - run: find files
     - uses: actions/upload-artifact@v4
       with:
-        name: setup-pmim-apk
+        name: setup-pmim-apk-db
         path: files
 
   # 自动构建 deno 的 proot 运行环境
@@ -90,7 +104,8 @@ jobs:
     - run: mkdir build1
     # 解压文件
     - run: mv deno-aarch64-unknown-linux-gnu.zip build1 && cd build1 && unzip deno-aarch64-unknown-linux-gnu.zip
-    - run: mv debian-bookworm-aarch64-pd-v4.7.0.tar.xz build1 && cd build1 && tar -xvf debian-bookworm-aarch64-pd-v4.7.0.tar.xz
+    # 忽略错误
+    - run: mv debian-bookworm-aarch64-pd-v4.7.0.tar.xz build1 && cd build1 && tar -xvf debian-bookworm-aarch64-pd-v4.7.0.tar.xz || true
     # DEBUG
     - run: find build1
 
