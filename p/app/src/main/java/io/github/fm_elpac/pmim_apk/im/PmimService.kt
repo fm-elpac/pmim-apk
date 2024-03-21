@@ -5,10 +5,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.content.Intent
-import android.content.ServiceConnection
-import android.content.ComponentName
-import android.os.IBinder
 
 // Android 输入法服务, 仅关注面向 Android 系统的接口部分
 class PmimService : InputMethodService() {
@@ -20,30 +16,7 @@ class PmimService : InputMethodService() {
     // 用于调试 (服务生命周期), 下同
     println("PmimService.onCreate()")
 
-    class Sc : ServiceConnection {
-      override fun onBindingDied(name: ComponentName) {
-        println("PmimService::ServiceConnection.onBindingDied()")
-      }
-
-      override fun onNullBinding(name: ComponentName) {
-        println("PmimService::ServiceConnection.onNullBinding()")
-      }
-
-      override fun onServiceConnected(name: ComponentName, service: IBinder) {
-        println("PmimService::ServiceConnection.onServiceConnected()")
-      }
-
-      override fun onServiceDisconnected(name: ComponentName) {
-        println("PmimService::ServiceConnection.onServiceDisconnected()")
-      }
-    }
-
-    // 启动 deno
-    bindService(
-      Intent(this, ServerService::class.java),
-      Sc(),
-      BIND_AUTO_CREATE or BIND_IMPORTANT
-    )
+    启动deno(this)
   }
 
   override fun onCreateInputView(): View {

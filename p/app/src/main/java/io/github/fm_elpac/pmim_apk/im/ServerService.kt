@@ -87,6 +87,8 @@ class ServerService : Service() {
       val unix接口文件 = File(内部运行目录, "us")
       // /storage/emulated/0/Android/data/io.github.fm_elpac.pmim_apk/files/pmim
       val 数据库目录 = File(外部文件目录, "pmim")
+      // /storage/emulated/0/Android/data/io.github.fm_elpac.pmim_apk/files/plugin
+      val 用户插件目录 = File(外部文件目录, "plugin")
 
       // deno 目录
       val deno目录 = File(外部文件目录, "deno")
@@ -109,6 +111,7 @@ class ServerService : Service() {
         "PMIMS_US=" + unix接口文件.getAbsolutePath(),
         "XDG_RUNTIME_DIR=" + 外部文件目录.getAbsolutePath(),
         "PMIMS_DB=" + 数据库目录.getAbsolutePath(),
+        "PMIMS_PLUGIN=" + 用户插件目录.getAbsolutePath(),
         "PMIMS_PORT=0",
         "PMIMS_ANDROID=1",
 

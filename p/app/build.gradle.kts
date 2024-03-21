@@ -11,8 +11,8 @@ android {
         applicationId = "io.github.fm_elpac.pmim_apk"
         minSdk = 27
         targetSdk = 28
-        versionCode = 1
-        versionName = "0.1.0-a1"
+        versionCode = 2
+        versionName = "0.1.0-a2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

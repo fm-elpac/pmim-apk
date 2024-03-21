@@ -1,24 +1,18 @@
 package io.github.fm_elpac.pmim_apk.im
 
-import java.io.File
-
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
-import android.webkit.WebView
 import android.webkit.JavascriptInterface
-import android.os.Looper
-import android.os.Handler
 import android.os.SystemClock
 
 // 输入法软键盘界面 (WebView)
 class ImView(val p: PmimService) {
+  val w = Wv(p, false)
 
   fun 设置高度dp(view: View, 高: Float) {
     // dp -> px
@@ -39,28 +33,14 @@ class ImView(val p: PmimService) {
   }
 
   fun onCreateInputView(): View {
-    // 启用调试 (不安全)
-    //WebView.setWebContentsDebuggingEnabled(true)
+    val v = w.createView()
+    v.addJavascriptInterface(Im接口(w, this, p), "pmim_a")
 
-    // 创建 WebView
-    val w = WebView(p)
-    // 启用 javascript
-    w.getSettings().setJavaScriptEnabled(true)
-
-    w.addJavascriptInterface(接口(this, p, w), "pmim_a")
-
-    val URL = 加载地址()
+    val URL = w.加载地址()
     println("ImView: " + URL)
 
-    w.loadUrl(URL)
-    return 初始化高度(w)
-  }
-
-  fun 加载地址(): String {
-    // /storage/emulated/0/Android/data/io.github.fm_elpac.pmim_apk/files/ui/lo/index.html
-    val 外部文件目录 = p.getExternalFilesDir(null)!!
-    val 首页文件 = File(外部文件目录, "ui/lo/index.html")
-    return "file://" + 首页文件.getAbsolutePath()
+    w.加载(URL)
+    return 初始化高度(v)
   }
 
   // Android 剪切板
@@ -96,8 +76,7 @@ class ImView(val p: PmimService) {
     剪切板().clearPrimaryClip()
   }
 
-  class 接口(val v: ImView, val p: PmimService, val w: WebView) {
-    val h = Handler(Looper.getMainLooper())
+  class Im接口(val w1: Wv, val v: ImView, val p: PmimService) : Wv接口(w1) {
 
     // 输入: 提交文本
     @JavascriptInterface
@@ -140,7 +119,7 @@ class ImView(val p: PmimService) {
     // 设置软键盘高度 (dp)
     @JavascriptInterface
     fun im_设置高度dp(高: Float) {
-      v.设置高度dp(w, 高)
+      v.设置高度dp(w1.getView(), 高)
     }
 
     // 创建 KeyEvent
@@ -280,55 +259,6 @@ class ImView(val p: PmimService) {
     @JavascriptInterface
     fun im_剪切板清空() {
       v.im_剪切板清空()
-    }
-
-    // 获取 pmim-server 的 HTTP 端口号
-    @JavascriptInterface
-    fun pm_端口(): String {
-      // /storage/emulated/0/Android/data/io.github.fm_elpac.pmim_apk/files/pmim/port
-      val 外部文件目录 = p.getExternalFilesDir(null)!!
-      val 端口文件 = File(外部文件目录, "pmim/port")
-      println("ImView: 端口文件 " + 端口文件.getAbsolutePath())
-
-      return 端口文件.readText()
-    }
-
-    // 读取 pmim-server 的口令
-    @JavascriptInterface
-    fun pm_口令(): String {
-      // /storage/emulated/0/Android/data/io.github.fm_elpac.pmim_apk/files/pmim/server_token
-      val 外部文件目录 = p.getExternalFilesDir(null)!!
-      val 口令文件 = File(外部文件目录, "pmim/server_token")
-      println("ImView: 口令文件 " + 口令文件.getAbsolutePath())
-
-      return 口令文件.readText()
-    }
-
-    // 日志输出, 用于调试
-    @JavascriptInterface
-    fun log(t: String) {
-      println("ImView.log: " + t)
-    }
-
-    // 加载 URL (重定向)
-    @JavascriptInterface
-    fun 加载(u: String?) {
-      // 默认加载 lo 加载器
-      var 地址 = u
-      if ((null == 地址) || (地址.length < 1)) {
-        地址 = v.加载地址()
-      }
-      println("ImView.load: " + 地址)
-
-      try {
-        // run on ui thread
-        h.post {
-          w.loadUrl(地址)
-        }
-      } catch (e: Exception) {
-        // TODO
-        println(e)
-      }
     }
   }
 }
