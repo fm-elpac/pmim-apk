@@ -21,5 +21,8 @@ class MainActivity : Activity() {
 
     // 显示 WebView
     setContentView(w.createView())
+
+    // status bar color (black)
+    window.statusBarColor = 0xff000000.toInt()
   }
 }
