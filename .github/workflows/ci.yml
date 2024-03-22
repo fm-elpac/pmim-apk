@@ -33,13 +33,19 @@ jobs:
     - uses: robinraju/release-downloader@v1
       with:
         repository: "fm-elpac/pmim-ibus"
-        tag: "v0.1.4"
+        tag: "v0.1.7"
         fileName: "ui-vue-dist.tar.zst"
+    # plugin (pmim-ibus)
+    - uses: robinraju/release-downloader@v1
+      with:
+        repository: "fm-elpac/pmim-ibus"
+        tag: "v0.1.7"
+        fileName: "pmim-plugin.tar.zst"
     # pmim-server
     - uses: robinraju/release-downloader@v1
       with:
         repository: "fm-elpac/pmim"
-        tag: "v0.1.2"
+        tag: "v0.1.4"
         fileName: "pmim-server.tar.zst"
     # pmim-data
     - uses: robinraju/release-downloader@v1
@@ -52,6 +58,7 @@ jobs:
     - run: mkdir build1 && mkdir files
     # 解压文件
     - run: mv ui-vue-dist.tar.zst build1 && cd build1 && tar -xvf ui-vue-dist.tar.zst
+    - run: mv pmim-plugin.tar.zst build1 && cd build1 && tar -xvf pmim-plugin.tar.zst
     - run: mv pmim-server.tar.zst build1 && cd build1 && tar -xvf pmim-server.tar.zst
     - run: mv pmim_sys.db.zst build1 && cd build1 && zstd -d pmim_sys.db.zst
     # DEBUG
@@ -59,6 +66,7 @@ jobs:
 
     # 开始组装
     - run: mv build1/server files/
+    - run: mkdir -p files/server/plugin && cp -r build1/plugin/* files/server/plugin
     - run: cp -r build1/ui-vue/dist/* files/server/static/
     - run: mv build1/ui-vue/dist files/ui
 
