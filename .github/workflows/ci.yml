@@ -88,8 +88,8 @@ jobs:
         name: setup-pmim-apk-db
         path: files
 
-  # 自动构建 deno 的 proot 运行环境
-  setup-proot:
+  # 自动构建 deno 运行环境 (termux-pacman/glibc-packages glibc-runner)
+  setup-deno:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -98,40 +98,40 @@ jobs:
     - uses: robinraju/release-downloader@v1
       with:
         repository: "denoland/deno"
-        tag: "v1.42.4"
+        tag: "v1.43.3"
         fileName: "deno-aarch64-unknown-linux-gnu.zip"
-    # proot-distro: debian12_aarch64 sysroot
-    - uses: robinraju/release-downloader@v1
-      with:
-        repository: "termux/proot-distro"
-        tag: "v4.7.0"
-        fileName: "debian-bookworm-aarch64-pd-v4.7.0.tar.xz"
-    # TODO termux ?
+    - run: unzip deno-aarch64-unknown-linux-gnu.zip
 
-    # 构建目录
-    - run: mkdir build1
-    # 解压文件
-    - run: mv deno-aarch64-unknown-linux-gnu.zip build1 && cd build1 && unzip deno-aarch64-unknown-linux-gnu.zip
-    # 忽略错误
-    - run: mv debian-bookworm-aarch64-pd-v4.7.0.tar.xz build1 && cd build1 && tar -xvf debian-bookworm-aarch64-pd-v4.7.0.tar.xz || true
-    # DEBUG
-    - run: find build1
+    # termux-pacman/gpkg
+    - run: curl -O https://service.termux-pacman.dev/gpkg/aarch64/gpkg.json
+    - run: curl -v https://service.termux-pacman.dev/gpkg/aarch64/$(cat gpkg.json | jq -r '."glibc".FILENAME') -o glibc.tar.xz
+    - run: curl -v https://service.termux-pacman.dev/gpkg/aarch64/$(cat gpkg.json | jq -r '."gcc-libs-glibc".FILENAME') -o gcc-libs-glibc.tar.xz
+    - run: tar -xvf glibc.tar.xz
+    - run: tar -xvf gcc-libs-glibc.tar.xz
 
     # 开始组装
-    - run: mkdir -p setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: mkdir -p setup-proot/setup/debian12_aarch64/usr/bin/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libdl.so.2 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libm.so.6 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libpthread.so.0 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/lib/aarch64-linux-gnu/libc.so.6 setup-proot/setup/debian12_aarch64/usr/lib/aarch64-linux-gnu/
-    - run: cp build1/debian-bookworm-aarch64/usr/bin/env setup-proot/setup/debian12_aarch64/usr/bin/
-    - run: mv build1/deno setup-proot/setup/debian12_aarch64/usr/bin/
+    - run: mkdir -p setup-deno/lib
+    - run: cp deno-aarch64-unknown-linux-gnu/deno setup-deno/
+    - run: |
+        env LIB=data/data/com.termux/files/usr/glibc/lib \
+        cp $LIB/ld-linux-aarch64.so.1 \
+        $LIB/libc.so.6 \
+        $LIB/libm.so.6 \
+        $LIB/libpthread.so.0 \
+        $LIB/libgcc_s.so.1 \
+        $LIB/libdl.so.2 \
+        setup-deno/lib
 
-    # DEBUG
-    - run: find setup-proot/setup
+    # patchelf
+    - run: |
+        patchelf \
+        --set-rpath /data/data/io.github.fm_elpac.pmim_apk/files/setup/lib \
+        --set-interpreter /data/data/io.github.fm_elpac.pmim_apk/files/setup/lib/ld-linux-aarch64.so.1 \
+        setup-deno/deno
+
+    # 组装完毕
+    - run: mv setup-deno setup
     - uses: actions/upload-artifact@v4
       with:
-        name: setup-proot-deno
-        path: setup-proot/setup
+        name: setup-deno
+        path: setup
