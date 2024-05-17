@@ -113,7 +113,7 @@ jobs:
     - run: mkdir -p setup-deno/lib
     - run: cp deno setup-deno/
     - run: |
-        env LIB=data/data/com.termux/files/usr/glibc/lib \
+        LIB=data/data/com.termux/files/usr/glibc/lib \
         cp $LIB/ld-linux-aarch64.so.1 \
         $LIB/libc.so.6 \
         $LIB/libm.so.6 \
