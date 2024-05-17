@@ -111,7 +111,7 @@ jobs:
 
     # 开始组装
     - run: mkdir -p setup-deno/lib
-    - run: cp deno-aarch64-unknown-linux-gnu/deno setup-deno/
+    - run: cp setup-deno/
     - run: |
         env LIB=data/data/com.termux/files/usr/glibc/lib \
         cp $LIB/ld-linux-aarch64.so.1 \
